@@ -15,7 +15,7 @@ class Server():
         dbConnection = mongoClient[options["DB_NAME"]]
         app = web.Application(
             [
-                ("api/messages", MessagesController),
+                ("/api/messages", MessagesController),
             ],
             dbConnection=dbConnection, 
             options=options,

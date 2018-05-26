@@ -5,30 +5,33 @@ import dateparser
 from datetime import datetime
 from bson import json_util
 
+
 class MessagesController(tornado.web.RequestHandler):
 
     def get_database(self):
         return self.settings["dbConnection"]
 
     async def get(self):
-        afterDate = dateparser.parse(self.get_argument("after", ""))
+        afterDate = dateparser.parse(self.get_argument("after", ""), settings={'TIMEZONE': 'UTC'})
         messages = None
-
         # Check if a `after` arguments was given, if so, return only messages after that time
         # this is mainly for client polling
         if afterDate:
             cursor = self.get_database().messages.find({"date": {
                 "$gt": afterDate
-            }}).sort([("date",-1)])
+            }}).sort([("date", -1)])
             messages = await cursor.to_list(length=None)
         else:
             # If no `after` date was given, return a partial history of messages
-            cursor = self.get_database().messages.find({}).sort([("date",-1)])
+            cursor = self.get_database().messages.find({}).sort([("date", -1)])
             messages = await cursor.to_list(length=self.settings["options"]["MAX_RESULTS"])
 
+
+
         # Serialize BSON to JSON format
-        self.set_header('Content-Type', "application/json; charset=UTF-8")
-        self.finish(json_util.dumps({"messages": messages}))
+        # self.set_header('Content-Type', "application/json; charset=UTF-8")
+        # self.finish(json_util.dumps({"messages": messages}))
+        self.finish(self.convertMessagesToJSON(messages))
 
     async def post(self):
         # Parse message body
@@ -39,7 +42,7 @@ class MessagesController(tornado.web.RequestHandler):
         # Validate args
         if(not content):
             raise tornado.web.MissingArgumentError("content")
-        
+
         if(not user_name):
             raise tornado.web.MissingArgumentError("userName")
 
@@ -49,7 +52,16 @@ class MessagesController(tornado.web.RequestHandler):
         await self.get_database().messages.insert_one({
             "userName": user_name,
             "content": content,
-            "date": datetime.now()
+            "date": datetime.utcnow()
         })
 
         self.set_status(201)
+
+    def convertMessagesToJSON(self, messages):
+        return({
+            "messages": list(map(lambda msg: {
+                "_id": str(msg['_id']),
+                "content": msg["content"],
+                "date": msg["date"].strftime("%Y-%m-%d %H:%M:%S.%f")
+            }, messages))
+        })
