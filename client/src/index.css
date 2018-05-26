@@ -3,3 +3,19 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+input, button{
+  border-width: 0;
+  border-radius: 2px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+button{
+  background-color: #88e8b1;
+  cursor: pointer;
+}
+
+button:disabled{
+  cursor: not-allowed;
+}
