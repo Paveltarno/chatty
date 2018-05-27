@@ -1,7 +1,8 @@
 import * as React from "react";
-import { last } from "lodash";
+import { take, uniqBy, map } from "lodash";
 
 const POLL_INTERVAL_MS = 2000;
+const MESSAGES_BUFFER_MAX = 100;
 
 // A wrapper that communicates with the server submitting and receiving messages
 export class MessagesRestHandler extends React.Component {
@@ -38,16 +39,30 @@ export class MessagesRestHandler extends React.Component {
       messages = (await response.json()).messages;
     } else {
       const response = await fetch(
-        `/api/messages?after=${
-          this.state.messages[0].date
-        }`
+        `/api/messages?after=${this.state.messages[0].date}`
       );
       messages = (await response.json()).messages;
     }
 
+    // First we
     this.setState({
       ...this.state,
-      messages: [...messages, ...this.state.messages]
+
+      // We allow only certain amount in our messages buffer
+      messages: take(
+        uniqBy(
+          [
+            ...map(messages, message => ({
+              ...message,
+              date: new Date(message.date)
+            })),
+            // Parse the date string as a date object
+            ...this.state.messages
+          ],
+          ({ _id }) => _id
+        ),
+        MESSAGES_BUFFER_MAX
+      )
     });
   }
 
