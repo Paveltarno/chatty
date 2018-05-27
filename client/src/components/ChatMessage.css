@@ -16,6 +16,7 @@
   border-radius: 10px;
   background-color: #88e8b1;
   padding: 10px;
+  word-wrap: break-word;
 }
 
 .chat-message div{

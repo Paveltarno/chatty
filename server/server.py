@@ -16,20 +16,26 @@ class Server():
         app = web.Application(
             [
                 ("/api/messages", MessagesController),
+                (r"/(.*)", web.StaticFileHandler,
+                {
+                    'path': os.path.join(os.path.dirname(__file__), '../client/build'),
+                    'default_filename': 'index.html'
+                })
             ],
-            dbConnection=dbConnection, 
+            dbConnection=dbConnection,
             options=options,
             debug=options["DEBUG"],
         )
         self.server = app.listen(options["SERVER_PORT"], options["ADDRESS"])
-        logging.info("Server started on {0}:{1}".format(options["ADDRESS"], options["SERVER_PORT"]))
+        logging.info("Server started on {0}:{1}".format(
+            options["ADDRESS"], options["SERVER_PORT"]))
         shutdown_event = locks.Event()
         await shutdown_event.wait()
 
     def initOptions(self):
         return {
             "SERVER_PORT": int(os.getenv("SERVER_PORT", 3000)),
-            "ADDRESS": os.getenv("SERVER_ADDRESS", "localhost"),
+            "ADDRESS": os.getenv("SERVER_ADDRESS", "0.0.0.0"),
             "MAX_RESULTS": int(os.getenv("MAX_RESULTS", 25)),
             "MONGO_URL": os.getenv("MONGO_URL", "mongodb://localhost:27017"),
             "DB_NAME": os.getenv("DB_NAME", "chatty"),
