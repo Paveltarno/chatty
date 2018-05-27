@@ -57,6 +57,7 @@ class MessagesController(tornado.web.RequestHandler):
             "messages": list(map(lambda msg: {
                 "_id": str(msg['_id']),
                 "content": msg["content"],
-                "date": msg["date"].strftime("%Y-%m-%d %H:%M:%S.%f")
+                "date": msg["date"].strftime("%Y-%m-%d %H:%M:%S.%f"),
+                "userName": msg["userName"]
             }, messages))
         })
