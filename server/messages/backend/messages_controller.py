@@ -26,12 +26,7 @@ class MessagesController(tornado.web.RequestHandler):
             cursor = self.get_database().messages.find({}).sort([("date", -1)])
             messages = await cursor.to_list(length=self.settings["options"]["MAX_RESULTS"])
 
-
-
-        # Serialize BSON to JSON format
-        # self.set_header('Content-Type', "application/json; charset=UTF-8")
-        # self.finish(json_util.dumps({"messages": messages}))
-        self.finish(self.convertMessagesToJSON(messages))
+        self.finish(self.serializeMessages(messages))
 
     async def post(self):
         # Parse message body
@@ -57,7 +52,7 @@ class MessagesController(tornado.web.RequestHandler):
 
         self.set_status(201)
 
-    def convertMessagesToJSON(self, messages):
+    def serializeMessages(self, messages):
         return({
             "messages": list(map(lambda msg: {
                 "_id": str(msg['_id']),
