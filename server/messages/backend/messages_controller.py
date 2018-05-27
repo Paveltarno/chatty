@@ -57,7 +57,7 @@ class MessagesController(tornado.web.RequestHandler):
             "messages": list(map(lambda msg: {
                 "_id": str(msg['_id']),
                 "content": msg["content"],
-                "date": msg["date"].strftime("%Y-%m-%d %H:%M:%S.%f UTC"),
+                "date": msg["date"].isoformat() + "Z", # We have to add the utc Z char by hand as python is not really ISO 860 compatible,
                 "userName": msg["userName"]
             }, messages))
         })
