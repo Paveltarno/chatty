@@ -30,6 +30,7 @@ export class MessagesRestHandler extends React.Component {
       ...this.state,
       isSending: false
     });
+    this.getMessages();
   }
 
   async getMessages() {

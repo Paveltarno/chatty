@@ -1,0 +1,28 @@
+.chat-page{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-page-history{
+  display: flex;
+  flex: 1 1;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
+  padding: 10px 20px 10px 20px;
+}
+
+.chat-page-control{
+  display: flex; 
+}
+
+.chat-page-control-input{
+  flex-grow: 1;
+}
+
+.chat-page-control-submit{
+  flex-grow: 0;
+  width: 25%;
+  max-width: 400px;
+}

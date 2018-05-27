@@ -43,6 +43,7 @@ export class LoginGuard extends React.Component {
             tabIndex={1}
             onChange={e => this.onInputChange(e.target.value)}
           />
+          <br/>
           <button
             tabIndex={2}
             disabled={this.state.userNameInput.length === 0}

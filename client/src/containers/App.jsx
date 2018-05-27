@@ -11,7 +11,14 @@ export class App extends React.Component {
         <LoginGuard>
           {({ userName }) => (
             <MessagesRestHandler>
-              {({ onMessage, messages, isSending }) => <ChatPage userName={userName} />}
+              {({ onMessage, messages, isSending }) => (
+                <ChatPage
+                  userName={userName}
+                  messages={messages}
+                  isSending={isSending}
+                  onMessage={onMessage}
+                />
+              )}
             </MessagesRestHandler>
           )}
         </LoginGuard>

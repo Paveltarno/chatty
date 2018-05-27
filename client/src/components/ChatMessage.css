@@ -1,0 +1,40 @@
+.chat-message-container{
+  display: flex;
+  flex-shrink: 0;
+}
+
+.chat-message-container.from-me{
+  flex-direction: row-reverse;
+}
+
+.chat-message{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 25%;
+  min-width: 100px;
+  border-radius: 10px;
+  background-color: #88e8b1;
+  padding: 10px;
+}
+
+.chat-message div{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.chat-message footer{
+  font-style: italic;
+  font-size: 80%;
+  font-weight: 100;
+}
+
+.chat-message.from-me{
+  background-color: white;
+}
+
+@media only screen and (max-width: 600px) {
+  .chat-message {
+    width: 90%;
+  }
+}
